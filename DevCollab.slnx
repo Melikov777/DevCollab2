@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DevCollab.API/DevCollab.API.csproj" />
+    <Project Path="src/DevCollab.Application/DevCollab.Application.csproj" />
+    <Project Path="src/DevCollab.Domain/DevCollab.Domain.csproj" />
+    <Project Path="src/DevCollab.Infrastructure/DevCollab.Infrastructure.csproj" />
+    <Project Path="src/DevCollab.Persistence/DevCollab.Persistence.csproj" />
+  </Folder>
+</Solution>
