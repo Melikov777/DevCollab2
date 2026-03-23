@@ -8,7 +8,6 @@ public class Notification : BaseEntity
     public bool IsRead { get; set; } = false;
     public NotificationType Type { get; set; }
 
-    // Foreign key
     public Guid UserId { get; set; }
     public User User { get; set; } = null!;
 }

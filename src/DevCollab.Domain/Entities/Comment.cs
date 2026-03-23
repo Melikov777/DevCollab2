@@ -4,7 +4,6 @@ public class Comment : BaseEntity
 {
     public string Body { get; set; } = string.Empty;
 
-    // Foreign keys
     public Guid ReviewId { get; set; }
     public Review Review { get; set; } = null!;
 

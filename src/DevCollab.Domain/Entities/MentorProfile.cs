@@ -6,7 +6,6 @@ public class MentorProfile : BaseEntity
     public string Skills { get; set; } = string.Empty;
     public int ExperienceYears { get; set; }
 
-    // Foreign key
     public Guid UserId { get; set; }
     public User User { get; set; } = null!;
 }

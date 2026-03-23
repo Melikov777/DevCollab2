@@ -2,7 +2,7 @@ namespace DevCollab.Domain.Enums;
 
 public enum NotificationType
 {
-    ReviewReceived = 0,
-    CommentAdded = 1,
-    MentorAssigned = 2
+    ReviewReceived = 1,
+    CommentAdded = 2,
+    MentorAssigned = 3
 }

@@ -1,0 +1,16 @@
+C:\Users\eliek\repos\DevCollab2\src\DevCollab.Application\obj\Debug\net10.0\DevCollab.Application.csproj.AssemblyReference.cache
+C:\Users\eliek\repos\DevCollab2\src\DevCollab.Application\obj\Debug\net10.0\DevCollab.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\eliek\repos\DevCollab2\src\DevCollab.Application\obj\Debug\net10.0\DevCollab.Application.AssemblyInfoInputs.cache
+C:\Users\eliek\repos\DevCollab2\src\DevCollab.Application\obj\Debug\net10.0\DevCollab.Application.AssemblyInfo.cs
+C:\Users\eliek\repos\DevCollab2\src\DevCollab.Application\obj\Debug\net10.0\DevCollab.Application.csproj.CoreCompileInputs.cache
+C:\Users\eliek\repos\DevCollab2\src\DevCollab.Application\obj\Debug\net10.0\DevCollab.Application.sourcelink.json
+C:\Users\eliek\repos\DevCollab2\src\DevCollab.Application\bin\Debug\net10.0\DevCollab.Application.deps.json
+C:\Users\eliek\repos\DevCollab2\src\DevCollab.Application\bin\Debug\net10.0\DevCollab.Application.dll
+C:\Users\eliek\repos\DevCollab2\src\DevCollab.Application\bin\Debug\net10.0\DevCollab.Application.pdb
+C:\Users\eliek\repos\DevCollab2\src\DevCollab.Application\bin\Debug\net10.0\DevCollab.Domain.dll
+C:\Users\eliek\repos\DevCollab2\src\DevCollab.Application\bin\Debug\net10.0\DevCollab.Domain.pdb
+C:\Users\eliek\repos\DevCollab2\src\DevCollab.Application\obj\Debug\net10.0\DevColla.4A68609C.Up2Date
+C:\Users\eliek\repos\DevCollab2\src\DevCollab.Application\obj\Debug\net10.0\DevCollab.Application.dll
+C:\Users\eliek\repos\DevCollab2\src\DevCollab.Application\obj\Debug\net10.0\refint\DevCollab.Application.dll
+C:\Users\eliek\repos\DevCollab2\src\DevCollab.Application\obj\Debug\net10.0\DevCollab.Application.pdb
+C:\Users\eliek\repos\DevCollab2\src\DevCollab.Application\obj\Debug\net10.0\ref\DevCollab.Application.dll

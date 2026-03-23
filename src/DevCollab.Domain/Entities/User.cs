@@ -9,7 +9,6 @@ public class User : BaseEntity
     public string PasswordHash { get; set; } = string.Empty;
     public UserRole Role { get; set; } = UserRole.Mentee;
 
-    // Navigation properties
     public MentorProfile? MentorProfile { get; set; }
     public ICollection<Project> Projects { get; set; } = new List<Project>();
     public ICollection<Review> Reviews { get; set; } = new List<Review>();

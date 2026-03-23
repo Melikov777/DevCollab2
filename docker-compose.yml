@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  devcollab-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: devcollab-api
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ConnectionStrings__DefaultConnection=Host=devcollab-db;Port=5432;Database=DevCollabDb;Username=postgres;Password=120272534Galatasaray1905
+      - Minio__Endpoint=devcollab-minio:9000
+    depends_on:
+      - devcollab-db
+      - devcollab-minio
+    networks:
+      - devcollab-network
+
+  devcollab-db:
+    image: postgres:15-alpine
+    container_name: devcollab-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=120272534Galatasaray1905
+      - POSTGRES_DB=DevCollabDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - devcollab-network
+
+  devcollab-minio:
+    image: minio/minio:latest
+    container_name: devcollab-minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - miniodata:/data
+    networks:
+      - devcollab-network
+
+networks:
+  devcollab-network:
+    driver: bridge
+
+volumes:
+  pgdata:
+  miniodata:
