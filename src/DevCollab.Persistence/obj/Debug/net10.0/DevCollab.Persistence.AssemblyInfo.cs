@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DevCollab.Persistence")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2fff11b5b8e64ff1261b08e991b939c3148a8a8c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ccc8988f4695f5547b1eece495c8183757293492")]
 [assembly: System.Reflection.AssemblyProductAttribute("DevCollab.Persistence")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DevCollab.Persistence")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
