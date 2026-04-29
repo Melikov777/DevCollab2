@@ -20,9 +20,14 @@ public class ReviewsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<ReviewDto>>> GetByProject(Guid projectId)
+    public async Task<ActionResult<PagedResult<ReviewDto>>> GetByProject(Guid projectId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var result = await _mediator.Send(new GetReviewsByProjectQuery { ProjectId = projectId });
+        var result = await _mediator.Send(new GetReviewsByProjectQuery
+        {
+            ProjectId = projectId,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        });
         return Ok(result);
     }
 
@@ -33,9 +38,17 @@ public class ReviewsController : ControllerBase
         if (projectId != createReviewDto.ProjectId)
             return BadRequest("Project ID mismatch.");
 
-        var reviewerId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        if (!TryGetCurrentUserId(out var reviewerId))
+            return Unauthorized("Invalid user token.");
+
         var command = new CreateReviewCommand { CreateReviewDto = createReviewDto, ReviewerId = reviewerId };
         var result = await _mediator.Send(command);
         return Ok(result);
+    }
+
+    private bool TryGetCurrentUserId(out Guid userId)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
+        return Guid.TryParse(userIdClaim, out userId);
     }
 }

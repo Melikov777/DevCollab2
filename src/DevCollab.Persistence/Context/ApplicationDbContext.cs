@@ -21,6 +21,9 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        modelBuilder.Entity<Project>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<Review>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<Comment>().HasQueryFilter(x => !x.IsDeleted);
         base.OnModelCreating(modelBuilder);
     }
 

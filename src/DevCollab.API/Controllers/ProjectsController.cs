@@ -22,9 +22,9 @@ public class ProjectsController : ControllerBase
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ActionResult<List<ProjectDto>>> GetAll()
+    public async Task<ActionResult<PagedResult<ProjectDto>>> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var result = await _mediator.Send(new GetAllProjectsQuery());
+        var result = await _mediator.Send(new GetAllProjectsQuery { PageNumber = pageNumber, PageSize = pageSize });
         return Ok(result);
     }
 
@@ -39,7 +39,9 @@ public class ProjectsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ProjectDto>> Create([FromBody] CreateProjectDto createProjectDto)
     {
-        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        if (!TryGetCurrentUserId(out var userId))
+            return Unauthorized("Invalid user token.");
+
         var command = new CreateProjectCommand { CreateProjectDto = createProjectDto, UserId = userId };
         var result = await _mediator.Send(command);
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
@@ -48,9 +50,17 @@ public class ProjectsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        if (!TryGetCurrentUserId(out var userId))
+            return Unauthorized("Invalid user token.");
+
         var command = new DeleteProjectCommand { ProjectId = id, UserId = userId };
         await _mediator.Send(command);
         return NoContent();
+    }
+
+    private bool TryGetCurrentUserId(out Guid userId)
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
+        return Guid.TryParse(userIdClaim, out userId);
     }
 }
