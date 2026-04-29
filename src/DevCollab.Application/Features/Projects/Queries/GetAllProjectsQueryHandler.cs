@@ -4,9 +4,11 @@ using DevCollab.Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
+using AutoMapper.QueryableExtensions;
+
 namespace DevCollab.Application.Features.Projects.Queries;
 
-public class GetAllProjectsQueryHandler : IRequestHandler<GetAllProjectsQuery, List<ProjectDto>>
+public class GetAllProjectsQueryHandler : IRequestHandler<GetAllProjectsQuery, PagedResult<ProjectDto>>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -17,13 +19,25 @@ public class GetAllProjectsQueryHandler : IRequestHandler<GetAllProjectsQuery, L
         _mapper = mapper;
     }
 
-    public async Task<List<ProjectDto>> Handle(GetAllProjectsQuery request, CancellationToken cancellationToken)
+    public async Task<PagedResult<ProjectDto>> Handle(GetAllProjectsQuery request, CancellationToken cancellationToken)
     {
-        var projects = await _context.Projects
-            .Include(p => p.User)
-            .OrderByDescending(p => p.CreatedAt)
+        var query = _context.Projects
+            .OrderByDescending(p => p.CreatedAt);
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var items = await query
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize)
+            .ProjectTo<ProjectDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        return _mapper.Map<List<ProjectDto>>(projects);
+        return new PagedResult<ProjectDto>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = request.PageNumber,
+            PageSize = request.PageSize
+        };
     }
 }

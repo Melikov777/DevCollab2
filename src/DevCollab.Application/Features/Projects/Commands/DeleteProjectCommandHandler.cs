@@ -6,16 +6,18 @@ namespace DevCollab.Application.Features.Projects.Commands;
 
 public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand, bool>
 {
-    private readonly IApplicationDbContext _context;
+    private readonly IRepository<Domain.Entities.Project> _repository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public DeleteProjectCommandHandler(IApplicationDbContext context)
+    public DeleteProjectCommandHandler(IRepository<Domain.Entities.Project> repository, IUnitOfWork unitOfWork)
     {
-        _context = context;
+        _repository = repository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<bool> Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
     {
-        var project = await _context.Projects.FindAsync(new object[] { request.ProjectId }, cancellationToken);
+        var project = await _repository.GetByIdAsync(request.ProjectId, cancellationToken);
 
         if (project == null)
             throw new NotFoundException(nameof(Domain.Entities.Project), request.ProjectId);
@@ -23,8 +25,9 @@ public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand,
         if (project.UserId != request.UserId)
             throw new DomainException("You do not have permission to delete this project.");
 
-        _context.Projects.Remove(project);
-        await _context.SaveChangesAsync(cancellationToken);
+        project.IsDeleted = true;
+        _repository.Update(project);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return true;
     }

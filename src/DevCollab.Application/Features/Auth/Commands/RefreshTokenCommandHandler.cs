@@ -1,35 +1,33 @@
+using AutoMapper;
 using DevCollab.Application.DTOs;
 using DevCollab.Application.Interfaces;
 using DevCollab.Domain.Exceptions;
 using MediatR;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevCollab.Application.Features.Auth.Commands;
 
-public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto>
+public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, AuthResponseDto>
 {
     private readonly IApplicationDbContext _context;
     private readonly IJwtGenerator _jwtGenerator;
     private readonly IMapper _mapper;
-    private readonly IPasswordHasher _passwordHasher;
 
-    public LoginCommandHandler(IApplicationDbContext context, IJwtGenerator jwtGenerator, IMapper mapper, IPasswordHasher passwordHasher)
+    public RefreshTokenCommandHandler(IApplicationDbContext context, IJwtGenerator jwtGenerator, IMapper mapper)
     {
         _context = context;
         _jwtGenerator = jwtGenerator;
         _mapper = mapper;
-        _passwordHasher = passwordHasher;
     }
 
-    public async Task<AuthResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<AuthResponseDto> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
         var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Email == request.LoginDto.Email, cancellationToken);
+            .FirstOrDefaultAsync(u => u.RefreshToken == request.RefreshTokenDto.RefreshToken, cancellationToken);
 
-        if (user == null || !_passwordHasher.VerifyPassword(request.LoginDto.Password, user.PasswordHash))
+        if (user == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
         {
-            throw new DomainException("Invalid email or password.");
+            throw new DomainException("Invalid or expired refresh token.");
         }
 
         user.RefreshToken = Guid.NewGuid().ToString();

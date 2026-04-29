@@ -14,12 +14,14 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthRespo
     private readonly IApplicationDbContext _context;
     private readonly IJwtGenerator _jwtGenerator;
     private readonly IMapper _mapper;
+    private readonly IPasswordHasher _passwordHasher;
 
-    public RegisterCommandHandler(IApplicationDbContext context, IJwtGenerator jwtGenerator, IMapper mapper)
+    public RegisterCommandHandler(IApplicationDbContext context, IJwtGenerator jwtGenerator, IMapper mapper, IPasswordHasher passwordHasher)
     {
         _context = context;
         _jwtGenerator = jwtGenerator;
         _mapper = mapper;
+        _passwordHasher = passwordHasher;
     }
 
     public async Task<AuthResponseDto> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -34,9 +36,10 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthRespo
         {
             Email = request.RegisterDto.Email,
             UserName = request.RegisterDto.UserName,
-            // Note: PasswordHashing should be injected, this is simplified for now
-            PasswordHash = request.RegisterDto.Password, 
-            Role = (UserRole)request.RegisterDto.Role
+            PasswordHash = _passwordHasher.HashPassword(request.RegisterDto.Password), 
+            Role = (UserRole)request.RegisterDto.Role,
+            RefreshToken = Guid.NewGuid().ToString(),
+            RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7)
         };
 
         if (user.Role == UserRole.Mentor)
@@ -56,6 +59,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthRespo
         return new AuthResponseDto
         {
             Token = token,
+            RefreshToken = user.RefreshToken,
             User = _mapper.Map<UserDto>(user)
         };
     }

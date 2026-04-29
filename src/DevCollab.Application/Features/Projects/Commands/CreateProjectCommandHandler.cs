@@ -9,13 +9,17 @@ namespace DevCollab.Application.Features.Projects.Commands;
 
 public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, ProjectDto>
 {
-    private readonly IApplicationDbContext _context;
+    private readonly IRepository<Project> _repository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IApplicationDbContext _context; // Needed just for Include, but let's refactor.
 
-    public CreateProjectCommandHandler(IApplicationDbContext context, IMapper mapper)
+    public CreateProjectCommandHandler(IRepository<Project> repository, IUnitOfWork unitOfWork, IMapper mapper, IApplicationDbContext context)
     {
-        _context = context;
+        _repository = repository;
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _context = context;
     }
 
     public async Task<ProjectDto> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
@@ -23,10 +27,10 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
         var project = _mapper.Map<Project>(request.CreateProjectDto);
         project.UserId = request.UserId;
 
-        _context.Projects.Add(project);
-        await _context.SaveChangesAsync(cancellationToken);
+        await _repository.AddAsync(project, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // Include user for mapping
+        // Include user for mapping - Ideally we would use ProjectTo here, or return the ID and let the client fetch, but keeping existing logic for now.
         var createdProject = await _context.Projects
             .Include(p => p.User)
             .FirstAsync(p => p.Id == project.Id, cancellationToken);
